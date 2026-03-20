@@ -1,16 +1,19 @@
 'use client'
+//Css
 import styles from './Styles/MainLayout.module.css';
+
+//Components
 import HeaderInfo from './HeaderInfo';
 import HeaderActions from './headerActions';
 import QueryTable from './QueryTable';
+import LogsTable from './LogsTable'
+import SearchBar from './Components/SearchBar'
+
+//React
 import { useState } from 'react';
-import { Person } from './Types/types';
+import { Person, Log } from './Types/types';
 import { useUi } from '@/context/UiContext'; 
 
-const HeaderInfoData = {
-    title: "Clientes",
-    status: true
-};
 
 const initialData: Person[] = [
   { id: 1, avatar: 'images/lilithIcon.png', nombre: "Juan", segundoNombre: "Carlos", apellido: "Pérez", tipoDoc: "CC", documento: "12345", celular: "3001112233", correo: "juan@mail.com", genero: "Masculino", fechaNacimiento: "1990-01-01" },
@@ -45,9 +48,43 @@ const initialData: Person[] = [
   { id: 30, avatar: '', nombre: "Ariel", segundoNombre: "Sasha", apellido: "Navarro", tipoDoc: "CE", documento: "99221100", celular: "3112223344", correo: "ariel.n@mail.com", genero: "Prefiero No Responder", fechaNacimiento: "1997-12-30" },
 ];
 
+const initialLogs: Log[] = [
+  { id: 1, dateAndHour: "2026-03-20 09:00:15", autor: "Marcus Rambal", document: "1043664701", typeOfAction: "Creación", details: "Se registró un nuevo usuario: Juan Pérez." },
+  { id: 2, dateAndHour: "2026-03-20 09:15:42", autor: "Marcus Rambal", document: "12345", typeOfAction: "Edición", details: "Actualización de número telefónico." },
+  { id: 3, dateAndHour: "2026-03-20 10:05:10", autor: "Sistemas Admin", document: "99887766", typeOfAction: "Eliminación", details: "Eliminación de registro por duplicidad." },
+  { id: 4, dateAndHour: "2026-03-20 10:30:00", autor: "Marcus Rambal", document: "10023456", typeOfAction: "Creación", details: "Registro de Ana Lucía Torres (TI)." },
+  { id: 5, dateAndHour: "2026-03-20 11:12:05", autor: "Sistemas Admin", document: "11223344", typeOfAction: "Login", details: "Inicio de sesión exitoso desde IP 192.168.1.45." },
+  { id: 6, dateAndHour: "2026-03-20 11:45:30", autor: "Marcus Rambal", document: "55667788", typeOfAction: "Edición", details: "Cambio de tipo de documento de TI a CC." },
+  { id: 7, dateAndHour: "2026-03-20 12:00:11", autor: "Marcus Rambal", document: "44556677", typeOfAction: "Consulta", details: "Descarga de reporte PDF de usuarios activos." },
+  { id: 8, dateAndHour: "2026-03-20 13:20:55", autor: "Sistemas Admin", document: "1043664701", typeOfAction: "Edición", details: "Modificación de permisos de rol: Administrador." },
+  { id: 9, dateAndHour: "2026-03-20 14:10:02", autor: "Marcus Rambal", document: "33445511", typeOfAction: "Eliminación", details: "Usuario Javier López dado de baja del sistema." },
+  { id: 10, dateAndHour: "2026-03-20 14:35:18", autor: "Marcus Rambal", document: "10056789", typeOfAction: "Creación", details: "Nuevo registro: Laura Herrera." },
+  { id: 11, dateAndHour: "2026-03-20 15:00:00", autor: "Sistemas Admin", document: "N/A", typeOfAction: "Mantenimiento", details: "Limpieza automática de caché del servidor." },
+  { id: 12, dateAndHour: "2026-03-21 08:30:45", autor: "Marcus Rambal", document: "66778822", typeOfAction: "Edición", details: "Corrección ortográfica en el nombre: Mónica Díaz." },
+  { id: 13, dateAndHour: "2026-03-21 09:12:12", autor: "Marcus Rambal", document: "11224466", typeOfAction: "Creación", details: "Registro de Fernando Salazar (CE)." },
+  { id: 14, dateAndHour: "2026-03-21 10:00:05", autor: "Sistemas Admin", document: "88991133", typeOfAction: "Consulta", details: "Búsqueda avanzada por rango de fechas." },
+  { id: 15, dateAndHour: "2026-03-21 10:45:33", autor: "Marcus Rambal", document: "44552211", typeOfAction: "Edición", details: "Actualización de correo electrónico: andres.r@mail.com." },
+  { id: 16, dateAndHour: "2026-03-21 11:20:10", autor: "Marcus Rambal", document: "77665544", typeOfAction: "Eliminación", details: "Registro de Patricia Ramos eliminado permanentemente." },
+  { id: 17, dateAndHour: "2026-03-21 12:15:00", autor: "Sistemas Admin", document: "12341234", typeOfAction: "Login", details: "Intento de acceso fallido (contraseña incorrecta)." },
+  { id: 18, dateAndHour: "2026-03-21 13:05:44", autor: "Marcus Rambal", document: "10098765", typeOfAction: "Edición", details: "Cambio de fecha de nacimiento de Isabel Vega." },
+  { id: 19, dateAndHour: "2026-03-21 14:40:22", autor: "Marcus Rambal", document: "55443322", typeOfAction: "Creación", details: "Registro de Gustavo Adolfo Marín." },
+  { id: 20, dateAndHour: "2026-03-21 15:55:01", autor: "Sistemas Admin", document: "99001122", typeOfAction: "Edición", details: "Usuario Carmen Gil marcado como inactivo." },
+  { id: 21, dateAndHour: "2026-03-22 09:10:15", autor: "Marcus Rambal", document: "44332211", typeOfAction: "Creación", details: "Nuevo registro: Alex Julián Mora (No Binario)." },
+  { id: 22, dateAndHour: "2026-03-22 09:45:00", autor: "Marcus Rambal", document: "66554433", typeOfAction: "Edición", details: "Cambio de dirección de residencia de Daniela Luna." },
+  { id: 23, dateAndHour: "2026-03-22 10:30:42", autor: "Sistemas Admin", document: "22113344", typeOfAction: "Consulta", details: "Exportación de base de datos a formato CSV." },
+  { id: 24, dateAndHour: "2026-03-22 11:15:20", autor: "Marcus Rambal", document: "88776655", typeOfAction: "Creación", details: "Registro de Natalia Andrea Peña." },
+  { id: 25, dateAndHour: "2026-03-22 12:00:55", autor: "Marcus Rambal", document: "11992288", typeOfAction: "Edición", details: "Actualización de avatar de Oscar Bermúdez." },
+  { id: 26, dateAndHour: "2026-03-22 13:40:12", autor: "Sistemas Admin", document: "33884477", typeOfAction: "Eliminación", details: "Registro duplicado de Julia Blanco eliminado." },
+  { id: 27, dateAndHour: "2026-03-22 14:25:30", autor: "Marcus Rambal", document: "10044332", typeOfAction: "Creación", details: "Registro de Samuel David Quintana (TI)." },
+  { id: 28, dateAndHour: "2026-03-22 15:10:05", autor: "Marcus Rambal", document: "55226611", typeOfAction: "Edición", details: "Cambio de celular: 3158889922." },
+  { id: 29, dateAndHour: "2026-03-22 16:00:00", autor: "Sistemas Admin", document: "77118822", typeOfAction: "Seguridad", details: "Cierre de sesión forzado por inactividad." },
+  { id: 30, dateAndHour: "2026-03-22 16:45:18", autor: "Marcus Rambal", document: "99221100", typeOfAction: "Creación", details: "Registro final: Ariel Sasha Navarro (CE)." },
+];
+
 export default function MainLayout () {
-    const { vistaActual } = useUi(); 
+    const { vistaActual, botonEncendido } = useUi(); 
     const [user, setUser] = useState<Person[]>(initialData);
+    const [logs, setLogs] = useState<Log[]>(initialLogs)
 
     const addUser = (newUser: Person) => setUser(prev => [newUser, ...prev]);
     const updateUser = (updatedUser: Person) => setUser(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
@@ -60,14 +97,14 @@ export default function MainLayout () {
             <div className={styles.headerInfo}>
                 <HeaderInfo 
                     title={vistaActual === 'tabla' ? "Clientes" : "Historial de Logs"}
-                    status={HeaderInfoData.status}
+                    status={botonEncendido}
                 />
             </div>
             
             {vistaActual === 'tabla' ? (
                 <>
-                    <div className={styles.headerActions}>
-                        <HeaderActions onUsuarioCreado={addUser} />
+                    <div className={`${styles.headerActions} ${!botonEncendido ? styles.disabled : ''}`}>
+                        <HeaderActions onUsuarioCreado={addUser} disabled={!botonEncendido} />
                     </div>
 
                     <div className={styles.queryTable}>
@@ -80,10 +117,18 @@ export default function MainLayout () {
                 </>
             ) : (
                 /* VISTA DE LOGS */
+                <>
+                 <div className={styles.headerActions}>
+                         <SearchBar/>
+                    </div>
+              
                 <div className={styles.logsContainer}>
-                    <p>Cargando registros de actividad...</p>
+                    <LogsTable
+                        data = {logs}
+                    />
                     {/* Aquí podrías llamar a un <LogsTable /> en el futuro */}
                 </div>
+                </>
             )}
 
         </div>

@@ -11,3 +11,12 @@ export interface Person {
   genero: string;
   fechaNacimiento: string;
 }
+
+export interface Log {
+  id:number;
+  dateAndHour: string;
+  autor:string;
+  document:string;
+  typeOfAction:string;
+  details:string;
+}

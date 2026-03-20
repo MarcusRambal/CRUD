@@ -1,5 +1,5 @@
 //Css
-import styles from './Styles/MainLayout.module.css';
+import styles from '../Styles/MainLayout.module.css';
 
 export default function SearchBar() {
     return (

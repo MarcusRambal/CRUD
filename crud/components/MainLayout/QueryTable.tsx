@@ -15,11 +15,10 @@ import { Person } from './Types/types.d';
 interface ColumnaConfig {
   etiqueta: string;
   clave: keyof Person | 'accion_editar' | 'accion_eliminar';
-  alineacion?: 'center' | 'left' | 'right';
 }
 
 const COLUMNAS: ColumnaConfig[] = [
-  { etiqueta: "Foto", clave: "avatar", alineacion: "center" },
+  { etiqueta: "Foto", clave: "avatar" },
   { etiqueta: "Nombre", clave: "nombre" },
   { etiqueta: "Segundo Nombre", clave: "segundoNombre" },
   { etiqueta: "Apellido", clave: "apellido" },
@@ -29,8 +28,8 @@ const COLUMNAS: ColumnaConfig[] = [
   { etiqueta: "Correo", clave: "correo" },
   { etiqueta: "Género", clave: "genero" },
   { etiqueta: "Fecha Nacimiento", clave: "fechaNacimiento" },
-  { etiqueta: "Editar", clave: "accion_editar", alineacion: "center" },
-  { etiqueta: "Eliminar", clave: "accion_eliminar", alineacion: "center" }
+  { etiqueta: "Editar", clave: "accion_editar" },
+  { etiqueta: "Eliminar", clave: "accion_eliminar" }
 ];
 
 
@@ -223,7 +222,7 @@ const handleOpenPreview = (url: string) => {
           <thead className={styles.thead}>
             <tr>
               {COLUMNAS.map((col, index) => (
-                <th key={index} className={`${styles.th} ${col.alineacion === 'center' ? styles.textCenter : ''}`}>
+                <th key={index} className={`${styles.th}`}>
                   {col.etiqueta}
                 </th>
               ))}
@@ -236,7 +235,7 @@ const handleOpenPreview = (url: string) => {
                   if (col.clave === "avatar") {
                     const avatarUrl = usuario.avatar || 'images/lilithIcon.png';
                     return (
-                      <td key={index} className={styles.textCenter}>
+                      <td key={index} className={styles.icon} >
                         <img 
                           src={avatarUrl}
                           alt="User" 
@@ -248,7 +247,7 @@ const handleOpenPreview = (url: string) => {
                   }
                   if (col.clave === "accion_editar") {
                     return (
-                      <td key={index} className={styles.textCenter}>
+                      <td key={index}>
                         <button className={styles.btnEditar} onClick={() => handleEditar(usuario)}>
                           <i className="bi bi-pencil-square"></i> Editar
                         </button>
@@ -257,7 +256,7 @@ const handleOpenPreview = (url: string) => {
                   }
                   if (col.clave === "accion_eliminar") {
                     return (
-                      <td key={index} className={styles.textCenter}>
+                      <td key={index}>
                         <button className={styles.btnEliminar} onClick={() => handleEliminar(usuario.id)}>
                           <i className="bi bi-trash"></i> Eliminar
                         </button>

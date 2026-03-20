@@ -5,7 +5,7 @@ import stylesActions from './Styles/MainLayout.module.css';
 import styles from './Styles/Table.module.css';
 
 //components
-import SearchBar from './SearchBar';
+import SearchBar from './Components/SearchBar';
 import Button from './Components/Button';
 import Modal from './Components/Modal';
 
@@ -15,11 +15,12 @@ import { Person } from './Types/types.d';
 
 interface Props {
   onUsuarioCreado: (usuario: Person) => void;
+  disabled: boolean;
 }
 
 
 
-export default function HeaderActions( { onUsuarioCreado }: Props) {
+export default function HeaderActions( { onUsuarioCreado, disabled  }: Props) {
 
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -162,8 +163,8 @@ const getEstadoCampo = (name: string) => {
   return (
     <div className={stylesActions.actions}>
       <SearchBar />
-      <Button label="Nueva Consulta" onClick={() => {}} />
-      <Button label="Crear +" onClick={handleOpenModal} />
+      <Button label="Nueva Consulta" onClick={() => {}} disabled = {disabled} />
+      <Button label="Crear +" onClick={handleOpenModal}/>
 
          <Modal   isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 {/* MODAL DE Creacion */}
