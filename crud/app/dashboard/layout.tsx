@@ -1,17 +1,20 @@
-// app/dashboard/layout.tsx
-import SideBar from '@/components/layout/SideBar';
+//Css
+import styles from './layout.module.css';
+
+//Components
+import SideBar from '@/components/SideBar/SideBar';
+import { UiProvider } from '@/context/UiContext'
+
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-[#E5E7EB]"> {/* Fondo gris claro */}
-      <SideBar /> 
-      
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* El "children" es lo que cambiará (la tabla de clientes) */}
-        <div className="flex-1 overflow-y-auto p-8">
-          {children}
-        </div>
-      </main>
-    </div>
+    <UiProvider>
+      <div className={styles.layoutContainer}>
+        <SideBar />
+        <main className={styles.mainContent}>
+            {children}
+        </main>
+      </div>
+    </UiProvider>
   );
 }

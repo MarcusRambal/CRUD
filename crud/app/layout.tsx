@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 
+
 export const metadata: Metadata = {
   title: "CRUD Diseño",
   description: "Un proyecto de CRUD con diseño moderno usando Next.js y Tailwind CSS",
